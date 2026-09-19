@@ -16,12 +16,10 @@ class Settings:
     ALGORITHM: str = 'HS256'
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 7  # 7 days
     
-    # PostgreSQL primary, fallback to SQLite
-    DATABASE_URL: str = os.getenv(
-        'DATABASE_URL', 
-        'postgresql://postgres:yash123@localhost:5432/student_assistant'
-    )
+    # PostgreSQL if DATABASE_URL is set, auto-fallback to SQLite
+    DATABASE_URL: str = os.getenv('DATABASE_URL', '')
     SQLITE_URL: str = 'sqlite:///./student_assistant.db'
+
     
     # Upload directory
     UPLOAD_DIR: str = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), 'uploads')
