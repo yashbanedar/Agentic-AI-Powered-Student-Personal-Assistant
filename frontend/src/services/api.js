@@ -1,4 +1,17 @@
-const API_BASE = "http://localhost:8005/api/v1";
+const getApiBase = () => {
+  const envUrl = import.meta.env.VITE_API_URL;
+  if (envUrl && envUrl.trim() !== "") {
+    return envUrl.endsWith("/api/v1") ? envUrl : `${envUrl.replace(/\/$/, "")}/api/v1`;
+  }
+  // In dev mode, default to local backend port 8005
+  if (import.meta.env.DEV) {
+    return "http://localhost:8005/api/v1";
+  }
+  // In production (same origin / unified deployment), use relative /api/v1
+  return "/api/v1";
+};
+
+const API_BASE = getApiBase();
 
 export const getAuthToken = () => localStorage.getItem("token");
 export const setAuthToken = (token) => localStorage.setItem("token", token);

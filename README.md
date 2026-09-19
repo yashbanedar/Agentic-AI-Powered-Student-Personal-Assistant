@@ -1,4 +1,4 @@
-﻿# Agentic AI-Powered Student Personal Assistant
+# Agentic AI-Powered Student Personal Assistant
 
 A full-stack, production-grade agentic educational web platform that helps students analyze study materials, plan preparation roadmaps adaptively, identify high-yield exam topics from PYQs, practice targeted quizzes, solve doubts with grounded RAG citations, and diagnose weak topics.
 
@@ -58,3 +58,21 @@ Access Frontend at: [http://localhost:5173](http://localhost:5173)
 
 ## 🔑 Demo Access
 On the Login screen, click **“1-Click Demo Student Login”** to immediately load the pre-configured academic profile with demo subjects, syllabus, exams, notes, and activity feed!
+
+---
+
+## 🌐 Deploy to Render (Live Public URL)
+
+Deploy this application to **Render** in 2 minutes to generate a live public HTTPS URL that anyone can use:
+
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/yashbanedar/Agentic-AI-Powered-Student-Personal-Assistant)
+
+### Quick 1-Click Deployment
+1. Go to [Render Dashboard](https://dashboard.render.com) and sign in with GitHub.
+2. Click **New +** -> **Web Service**.
+3. Connect repository: `yashbanedar/Agentic-AI-Powered-Student-Personal-Assistant`.
+4. Select **Docker** as the Runtime and choose the **Free** instance type.
+5. Click **Deploy Web Service**.
+6. Render builds the React frontend and FastAPI backend into a unified container and gives you a live public URL (e.g., `https://student-ai-assistant.onrender.com`).
+
+For detailed instructions and Render Blueprint options, see [DEPLOYMENT.md](file:///c:/Users/prati/.gemini/antigravity/scratch/student-ai-assistant/DEPLOYMENT.md).

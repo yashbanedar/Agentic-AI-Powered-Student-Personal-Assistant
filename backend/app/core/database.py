@@ -1,4 +1,4 @@
-﻿import logging
+import logging
 from sqlalchemy import create_engine
 from sqlalchemy.orm import declarative_base, sessionmaker
 from app.core.config import settings
@@ -8,9 +8,16 @@ logger = logging.getLogger("app.database")
 def get_engine():
     # Try PostgreSQL first if specified
     db_url = settings.DATABASE_URL
+    if db_url and db_url.startswith("postgres://"):
+        db_url = db_url.replace("postgres://", "postgresql://", 1)
+
     try:
-        if "postgresql" in db_url:
-            test_engine = create_engine(db_url, connect_args={"connect_timeout": 3})
+        if db_url and ("postgresql" in db_url or "postgres" in db_url):
+            test_engine = create_engine(
+                db_url,
+                connect_args={"connect_timeout": 3},
+                pool_pre_ping=True
+            )
             with test_engine.connect() as conn:
                 logger.info("Successfully connected to PostgreSQL database.")
                 return test_engine

@@ -2,6 +2,8 @@ import os
 import uvicorn
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
 
 from app.core.config import settings
 from app.core.database import engine, Base
@@ -41,18 +43,46 @@ app.include_router(recommendations.router, prefix=settings.API_V1_STR)
 app.include_router(notes.router, prefix=settings.API_V1_STR)
 app.include_router(activity.router, prefix=settings.API_V1_STR)
 
-@app.get('/')
-def root():
-    return {
-        'status': 'online',
-        'service': settings.PROJECT_NAME,
-        'docs': '/docs',
-        'version': '1.0.0'
-    }
-
 @app.get('/health')
 def health_check():
     return {'status': 'healthy', 'database': str(engine.url).split('@')[-1] if '@' in str(engine.url) else str(engine.url)}
 
+# Locate frontend production build assets
+frontend_dist_candidates = [
+    os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'frontend', 'dist'),
+    os.path.join(os.path.dirname(os.path.abspath(__file__)), 'dist'),
+    os.path.join(os.getcwd(), 'frontend', 'dist'),
+    os.path.join(os.getcwd(), 'dist')
+]
+
+frontend_dist = next((p for p in frontend_dist_candidates if os.path.isdir(p) and os.path.isfile(os.path.join(p, 'index.html'))), None)
+
+if frontend_dist:
+    assets_dir = os.path.join(frontend_dist, 'assets')
+    if os.path.isdir(assets_dir):
+        app.mount('/assets', StaticFiles(directory=assets_dir), name='assets')
+
+    @app.get('/{full_path:path}')
+    def serve_frontend_spa(full_path: str = ''):
+        # Do not intercept API endpoints or auto-generated documentation
+        if full_path.startswith('api/') or full_path in ('docs', 'redoc', 'openapi.json'):
+            return {'detail': 'Not Found'}
+        
+        target_path = os.path.join(frontend_dist, full_path)
+        if full_path and os.path.isfile(target_path):
+            return FileResponse(target_path)
+        return FileResponse(os.path.join(frontend_dist, 'index.html'))
+else:
+    @app.get('/')
+    def root():
+        return {
+            'status': 'online',
+            'service': settings.PROJECT_NAME,
+            'docs': '/docs',
+            'version': '1.0.0'
+        }
+
 if __name__ == '__main__':
-    uvicorn.run('main:app', host='0.0.0.0', port=8000, reload=True)
+    port = int(os.getenv('PORT', 8000))
+    uvicorn.run('main:app', host='0.0.0.0', port=port, reload=False)
+
