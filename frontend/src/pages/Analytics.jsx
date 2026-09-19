@@ -1,0 +1,166 @@
+import React, { useState, useEffect } from "react";
+import { api } from "../services/api";
+import {
+  BarChart3,
+  TrendingUp,
+  Award,
+  AlertTriangle,
+  Clock,
+  CheckCircle2,
+  BrainCircuit,
+  Zap
+} from "lucide-react";
+
+export default function Analytics() {
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    setLoading(true);
+    api
+      .getAnalytics()
+      .then(setData)
+      .catch(console.error)
+      .finally(() => setLoading(false));
+  }, []);
+
+  return (
+    <div className="space-y-6">
+      {/* Header */}
+      <div>
+        <h2 className="text-xl font-bold text-white">Performance & Topic Analytics</h2>
+        <p className="text-xs text-slate-400">
+          Evaluated by the Evaluation Agent and tracked across all quizzes, topics and subjects
+        </p>
+      </div>
+
+      {/* KPI Cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        <div className="bg-slate-900/80 border border-slate-800 rounded-2xl p-5 shadow-lg">
+          <div className="flex items-center justify-between text-xs text-slate-400 mb-2">
+            <span>Overall Accuracy</span>
+            <Award className="w-4 h-4 text-indigo-400" />
+          </div>
+          <div className="text-3xl font-black text-white">
+            {data?.total_quizzes_completed > 0 ? `${data.overall_accuracy}%` : "—"}
+          </div>
+          <span className="text-[11px] text-slate-400 font-medium mt-1 inline-block">
+            {data?.total_quizzes_completed > 0 ? "Cumulative quiz average" : "Take a quiz to activate"}
+          </span>
+        </div>
+
+        <div className="bg-slate-900/80 border border-slate-800 rounded-2xl p-5 shadow-lg">
+          <div className="flex items-center justify-between text-xs text-slate-400 mb-2">
+            <span>Quizzes Evaluated</span>
+            <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+          </div>
+          <div className="text-3xl font-black text-white">{data?.total_quizzes_completed ?? 0}</div>
+          <span className="text-[11px] text-slate-400 mt-1 inline-block">Across all registered subjects</span>
+        </div>
+
+        <div className="bg-slate-900/80 border border-slate-800 rounded-2xl p-5 shadow-lg">
+          <div className="flex items-center justify-between text-xs text-slate-400 mb-2">
+            <span>Study Streak</span>
+            <Zap className="w-4 h-4 text-amber-400" />
+          </div>
+          <div className="text-3xl font-black text-amber-400">{data?.study_streak_days ?? 1} Day{data?.study_streak_days !== 1 ? "s" : ""} 🔥</div>
+          <span className="text-[11px] text-slate-400 mt-1 inline-block">Daily consistency maintained</span>
+        </div>
+
+        <div className="bg-slate-900/80 border border-slate-800 rounded-2xl p-5 shadow-lg">
+          <div className="flex items-center justify-between text-xs text-slate-400 mb-2">
+            <span>Weak Topics Flagged</span>
+            <AlertTriangle className="w-4 h-4 text-rose-400" />
+          </div>
+          <div className="text-3xl font-black text-rose-400">
+            {data?.weak_topics?.length ?? 0}
+          </div>
+          <span className="text-[11px] text-rose-300 font-medium mt-1 inline-block">
+            {data?.weak_topics?.length > 0 ? "Scheduled for targeted drill" : "No weak topics flagged"}
+          </span>
+        </div>
+      </div>
+
+      {/* Score Progress Trend */}
+      <div className="bg-slate-900/80 border border-slate-800 rounded-2xl p-6 shadow-xl space-y-4">
+        <h3 className="font-bold text-white text-sm flex items-center gap-2">
+          <TrendingUp className="w-4 h-4 text-indigo-400" />
+          Test Performance Progression Over Time
+        </h3>
+
+        {data?.score_trend && data.score_trend.length > 0 ? (
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-2">
+            {data.score_trend.map((item, idx) => (
+              <div key={idx} className="p-4 bg-slate-950/80 border border-slate-800 rounded-xl text-center space-y-2">
+                <div className="text-xs text-slate-400 font-medium">{item.test_num}</div>
+                <div className="text-2xl font-black text-indigo-400">{item.score}%</div>
+                <div className="text-[10px] text-slate-500">{item.date}</div>
+                <div className="w-full bg-slate-800 rounded-full h-1.5 overflow-hidden mt-2">
+                  <div className="bg-indigo-500 h-full rounded-full" style={{ width: `${item.score}%` }}></div>
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="py-8 text-center space-y-2 border border-dashed border-slate-800 rounded-xl bg-slate-950/30">
+            <p className="text-xs text-slate-400">No test results recorded yet.</p>
+            <p className="text-[11px] text-slate-500 max-w-sm mx-auto">
+              Complete quizzes generated by the Quiz Agent to start plotting your performance progression curve.
+            </p>
+          </div>
+        )}
+      </div>
+
+      {/* Weak Topics Deep-Dive Table */}
+      <div className="bg-slate-900/80 border border-slate-800 rounded-2xl p-6 shadow-xl space-y-4">
+        <div className="flex items-center justify-between">
+          <h3 className="font-bold text-white text-sm flex items-center gap-2">
+            <AlertTriangle className="w-4 h-4 text-rose-400" />
+            Weak Topic Diagnostic & Action Items
+          </h3>
+          <span className="text-xs text-slate-400">Threshold: &lt;60% Accuracy</span>
+        </div>
+
+        {data?.weak_topics && data.weak_topics.length > 0 ? (
+          <div className="space-y-3">
+            {data.weak_topics.map((w, idx) => (
+              <div
+                key={idx}
+                className="p-4 bg-slate-950/60 border border-slate-800 rounded-xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3"
+              >
+                <div className="space-y-1">
+                  <div className="flex items-center gap-2">
+                    <h4 className="text-xs font-bold text-white">{w.topic}</h4>
+                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-rose-500/10 text-rose-400 border border-rose-500/20">
+                      {w.priority} Priority
+                    </span>
+                  </div>
+                  <p className="text-xs text-slate-400">
+                    Failed or inaccurate in {w.failed_attempts} test question(s).
+                  </p>
+                </div>
+
+                <div className="flex items-center gap-4">
+                  <div className="text-right">
+                    <div className="text-sm font-black text-rose-400">{w.accuracy}%</div>
+                    <div className="text-[10px] text-slate-500">Current Accuracy</div>
+                  </div>
+                  <span className="text-xs font-semibold px-3 py-1.5 bg-indigo-600/20 text-indigo-300 border border-indigo-500/30 rounded-xl">
+                    {w.action}
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="py-8 text-center space-y-2 border border-dashed border-slate-800 rounded-xl bg-slate-950/30">
+            <p className="text-xs text-slate-400 font-semibold">No Weak Topics Flagged</p>
+            <p className="text-[11px] text-slate-500 max-w-sm mx-auto">
+              Topics where you score below 60% in practice quizzes will automatically be flagged here for targeted revision.
+            </p>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
