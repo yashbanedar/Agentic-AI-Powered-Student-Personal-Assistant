@@ -70,7 +70,7 @@ export default function Dashboard() {
   return (
     <div className="space-y-6">
       {/* 1. HERO BANNER: "What should I study now?" AI Recommendation */}
-      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-indigo-900/80 via-indigo-950 to-slate-900 border border-indigo-500/30 p-6 shadow-2xl backdrop-blur-xl">
+      <div className="dashboard-hero relative overflow-hidden rounded-2xl bg-gradient-to-r from-indigo-900/80 via-indigo-950 to-slate-900 border border-indigo-500/30 p-6 shadow-2xl backdrop-blur-xl">
         <div className="absolute -right-10 -top-10 w-64 h-64 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none"></div>
         <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-5 relative z-10">
           <div className="space-y-2 max-w-2xl">

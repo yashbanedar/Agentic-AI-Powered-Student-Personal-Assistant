@@ -1,4 +1,5 @@
 import React from "react";
+import { ThemeProvider } from "./context/ThemeContext";
 import { AuthProvider, useAuth } from "./context/AuthContext";
 import { AppProvider, useApp } from "./context/AppContext";
 import Layout from "./components/layout/Layout";
@@ -65,10 +66,12 @@ function MainApp() {
 
 export default function App() {
   return (
-    <AuthProvider>
-      <AppProvider>
-        <MainApp />
-      </AppProvider>
-    </AuthProvider>
+    <ThemeProvider>
+      <AuthProvider>
+        <AppProvider>
+          <MainApp />
+        </AppProvider>
+      </AuthProvider>
+    </ThemeProvider>
   );
 }

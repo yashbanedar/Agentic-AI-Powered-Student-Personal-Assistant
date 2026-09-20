@@ -1,13 +1,154 @@
-﻿@import "tailwindcss";
+@import "tailwindcss";
 
 @layer base {
   body {
     @apply bg-slate-950 text-slate-100 antialiased selection:bg-indigo-500 selection:text-white;
     font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    transition: background-color 0.25s ease, color 0.25s ease;
   }
 }
 
-/* Custom modern scrollbar */
+/* ==========================================================================
+   Light Theme System
+   ========================================================================== */
+html.light,
+[data-theme="light"] {
+  color-scheme: light;
+
+  /* Invert Slate Palette for Crisp Modern Light Theme */
+  --color-slate-950: #f8fafc; /* Main canvas background (slate-50) */
+  --color-slate-900: #ffffff; /* Primary card / panel / surface (pure white) */
+  --color-slate-800: #f1f5f9; /* Sub-elements, secondary pills, hover background (slate-100) */
+  --color-slate-700: #e2e8f0; /* Crisp subtle borders (slate-200) */
+  --color-slate-600: #cbd5e1; /* Secondary borders (slate-300) */
+  --color-slate-500: #64748b; /* Muted captions and metadata */
+  --color-slate-400: #475569; /* Secondary body and subtitle text */
+  --color-slate-300: #334155; /* Readable body paragraphs */
+  --color-slate-200: #1e293b; /* Strong content and subtitles */
+  --color-slate-100: #0f172a; /* High-contrast headers and bold titles */
+
+  /* Modern soft shadows for floating cards */
+  --tw-shadow-color: rgba(15, 23, 42, 0.06);
+}
+
+/* Headings and Titles on Cards in Light Mode */
+html.light h1.text-white,
+html.light h2.text-white,
+html.light h3.text-white,
+html.light h4.text-white,
+html.light h5.text-white,
+html.light .text-white:not([class*="bg-indigo"]):not([class*="bg-violet"]):not([class*="bg-purple"]):not([class*="bg-emerald"]):not([class*="bg-rose"]):not([class*="bg-blue"]):not([class*="bg-gradient"]):not(button):not(.badge-filled) {
+  color: #0f172a;
+}
+
+/* Ensure Colored Buttons and Badges maintain Crisp White Text */
+html.light button[class*="bg-indigo"],
+html.light button[class*="bg-purple"],
+html.light button[class*="bg-violet"],
+html.light button[class*="bg-rose"],
+html.light button[class*="bg-emerald"],
+html.light button[class*="bg-blue"],
+html.light [class*="bg-indigo-600"] > *,
+html.light [class*="bg-indigo-600"].text-white,
+html.light [class*="bg-purple-600"].text-white,
+html.light [class*="bg-rose-500"].text-white,
+html.light [class*="bg-emerald-500"].text-white,
+html.light .bg-indigo-600,
+html.light .bg-indigo-500 {
+  color: #ffffff !important;
+}
+
+/* Dashboard Hero Banner in Light Mode */
+html.light .dashboard-hero {
+  background: linear-gradient(135deg, #4338ca 0%, #4f46e5 50%, #6d28d9 100%) !important;
+  border-color: rgba(99, 102, 241, 0.4) !important;
+  box-shadow: 0 10px 30px -5px rgba(79, 70, 229, 0.25) !important;
+}
+html.light .dashboard-hero h1,
+html.light .dashboard-hero h2,
+html.light .dashboard-hero p,
+html.light .dashboard-hero span {
+  color: #ffffff !important;
+}
+html.light .dashboard-hero button {
+  background: #ffffff !important;
+  color: #4338ca !important;
+  box-shadow: 0 4px 14px 0 rgba(0, 0, 0, 0.12) !important;
+}
+html.light .dashboard-hero button svg {
+  fill: #4338ca !important;
+}
+html.light .dashboard-hero button:hover {
+  background: #f8fafc !important;
+}
+
+/* Light Mode Alpha Glass & Borders */
+html.light .bg-slate-900\/80,
+html.light .bg-slate-900\/90,
+html.light .bg-slate-900\/60 {
+  background-color: rgba(255, 255, 255, 0.92) !important;
+  backdrop-filter: blur(12px);
+}
+
+html.light .bg-slate-950\/60,
+html.light .bg-slate-950\/70,
+html.light .bg-slate-950\/80 {
+  background-color: rgba(241, 245, 249, 0.9) !important;
+}
+
+html.light .border-slate-800,
+html.light .border-slate-800\/80,
+html.light .border-slate-800\/70,
+html.light .border-slate-800\/60 {
+  border-color: #e2e8f0 !important;
+}
+
+html.light .border-slate-700 {
+  border-color: #cbd5e1 !important;
+}
+
+/* Selected Option Contrast */
+html.light .bg-indigo-600\/20.text-white {
+  background-color: #e0e7ff !important;
+  color: #3730a3 !important;
+}
+
+/* Card Elevated Shadows in Light Mode */
+html.light .shadow-lg,
+html.light .shadow-xl,
+html.light .shadow-2xl {
+  box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.05), 0 2px 6px -2px rgba(15, 23, 42, 0.03) !important;
+}
+
+/* Form Inputs in Light Mode */
+html.light input:not([type="checkbox"]):not([type="radio"]),
+html.light select,
+html.light textarea {
+  background-color: #ffffff !important;
+  border-color: #cbd5e1 !important;
+  color: #0f172a !important;
+}
+
+html.light input:focus,
+html.light select:focus,
+html.light textarea:focus {
+  border-color: #6366f1 !important;
+  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2) !important;
+}
+
+/* Light Theme Scrollbars */
+html.light ::-webkit-scrollbar-track {
+  background: rgba(241, 245, 249, 0.8);
+}
+html.light ::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.5);
+  border-radius: 4px;
+}
+html.light ::-webkit-scrollbar-thumb:hover {
+  background: rgba(99, 102, 241, 0.6);
+}
+
+/* Dark Theme Scrollbars (Default) */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
