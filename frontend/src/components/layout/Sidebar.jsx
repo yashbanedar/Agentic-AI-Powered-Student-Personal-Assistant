@@ -2,6 +2,7 @@ import React from "react";
 import { useApp } from "../../context/AppContext";
 import { useAuth } from "../../context/AuthContext";
 import { useTheme } from "../../context/ThemeContext";
+import { useLanguage } from "../../context/LanguageContext";
 import {
   LayoutDashboard,
   FolderKanban,
@@ -26,21 +27,22 @@ export default function Sidebar() {
   const { activeTab, setActiveTab } = useApp();
   const { user, logout } = useAuth();
   const { isLight, toggleTheme } = useTheme();
+  const { t } = useLanguage();
 
   const navItems = [
-    { id: "dashboard", label: "Dashboard", icon: LayoutDashboard },
-    { id: "subjects", label: "Subjects", icon: FolderKanban },
-    { id: "materials", label: "Study Materials", icon: UploadCloud },
-    { id: "syllabus", label: "Syllabus", icon: BookOpen },
-    { id: "exams", label: "Exam Timetable", icon: CalendarDays },
-    { id: "roadmap", label: "Study Roadmap", icon: Route },
-    { id: "notes", label: "AI Notes", icon: FileEdit },
-    { id: "pyq", label: "PYQ Analysis", icon: HelpCircle },
-    { id: "quizzes", label: "Quiz & Tests", icon: Sparkles },
-    { id: "analytics", label: "Performance Analytics", icon: BarChart3 },
-    { id: "recommendations", label: "AI Recommendations", icon: Lightbulb },
-    { id: "chat", label: "AI Chat Assistant", icon: MessageSquare },
-    { id: "settings", label: "Settings", icon: SettingsIcon },
+    { id: "dashboard", label: t("nav.dashboard", "Dashboard"), icon: LayoutDashboard },
+    { id: "subjects", label: t("nav.subjects", "Subjects"), icon: FolderKanban },
+    { id: "materials", label: t("nav.materials", "Study Materials"), icon: UploadCloud },
+    { id: "syllabus", label: t("nav.syllabus", "Syllabus"), icon: BookOpen },
+    { id: "exams", label: t("nav.exams", "Exam Timetable"), icon: CalendarDays },
+    { id: "roadmap", label: t("nav.roadmap", "Study Roadmap"), icon: Route },
+    { id: "notes", label: t("nav.notes", "AI Notes"), icon: FileEdit },
+    { id: "pyq", label: t("nav.pyq", "PYQ Analysis"), icon: HelpCircle },
+    { id: "quizzes", label: t("nav.quizzes", "Quiz & Tests"), icon: Sparkles },
+    { id: "analytics", label: t("nav.analytics", "Performance Analytics"), icon: BarChart3 },
+    { id: "recommendations", label: t("nav.recommendations", "AI Recommendations"), icon: Lightbulb },
+    { id: "chat", label: t("nav.chat", "AI Chat Assistant"), icon: MessageSquare },
+    { id: "settings", label: t("nav.settings", "Settings"), icon: SettingsIcon },
   ];
 
   return (
@@ -52,16 +54,16 @@ export default function Sidebar() {
         </div>
         <div className="overflow-hidden">
           <h1 className="font-bold text-sm tracking-tight text-white flex items-center gap-1.5">
-            Student AI <span className="text-[10px] bg-indigo-500/15 text-indigo-500 font-bold px-1.5 py-0.5 rounded font-mono">v2.0</span>
+            {t("brand.name", "Student AI")} <span className="text-[10px] bg-indigo-500/15 text-indigo-400 font-bold px-1.5 py-0.5 rounded font-mono">{t("brand.version", "v2.0")}</span>
           </h1>
-          <p className="text-[11px] text-slate-400 truncate">Agentic Personal Assistant</p>
+          <p className="text-[11px] text-slate-400 truncate">{t("brand.tagline", "Agentic Personal Assistant")}</p>
         </div>
       </div>
 
       {/* Navigation List */}
       <nav className="flex-1 overflow-y-auto px-3 py-4 space-y-1">
         <div className="px-3 pb-2 text-[10px] font-bold uppercase tracking-wider text-slate-400">
-          Core Workflows
+          {t("nav.coreWorkflows", "Core Workflows")}
         </div>
         {navItems.map((item) => {
           const Icon = item.icon;
@@ -90,10 +92,10 @@ export default function Sidebar() {
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
             <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
           </span>
-          <span className="text-[11px] font-bold text-slate-200">10 Agents Active</span>
+          <span className="text-[11px] font-bold text-slate-200">{t("brand.agentsActive", "10 AI Agents Live")}</span>
         </div>
         <p className="text-[10px] text-slate-400 leading-tight">
-          Adaptive Planner, PYQ Analyzer, Evaluator & Tutor RAG active
+          {t("brand.agentsDesc", "Adaptive Planner, PYQ Analyzer, Evaluator & Tutor RAG active")}
         </p>
       </div>
 
@@ -112,13 +114,13 @@ export default function Sidebar() {
           <button
             onClick={toggleTheme}
             title={isLight ? "Switch to Dark Theme" : "Switch to Light Theme"}
-            className="p-1.5 text-slate-400 hover:text-indigo-500 hover:bg-slate-800 rounded-lg transition cursor-pointer"
+            className="p-1.5 text-slate-400 hover:text-indigo-400 hover:bg-slate-800 rounded-lg transition cursor-pointer"
           >
             {isLight ? <Moon className="w-3.5 h-3.5" /> : <Sun className="w-3.5 h-3.5 text-amber-400" />}
           </button>
           <button
             onClick={logout}
-            title="Sign Out"
+            title={t("nav.logout", "Sign Out")}
             className="p-1.5 text-slate-400 hover:text-rose-400 hover:bg-slate-800 rounded-lg transition cursor-pointer"
           >
             <LogOut className="w-3.5 h-3.5" />

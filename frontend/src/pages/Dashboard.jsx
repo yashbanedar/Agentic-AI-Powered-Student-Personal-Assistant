@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { useApp } from "../context/AppContext";
+import { useAuth } from "../context/AuthContext";
+import { useLanguage } from "../context/LanguageContext";
 import { api } from "../services/api";
 import AIActivityFeed from "../components/common/AIActivityFeed";
 import {
-  Sparkles,
   CalendarDays,
   Clock,
   CheckCircle2,
@@ -19,6 +20,8 @@ import {
 
 export default function Dashboard() {
   const { setActiveTab, subjects, selectedSubject, triggerRefresh } = useApp();
+  const { user } = useAuth();
+  const { t, language } = useLanguage();
   const [recommendation, setRecommendation] = useState(null);
   const [exams, setExams] = useState([]);
   const [todayTasks, setTodayTasks] = useState([]);
@@ -74,26 +77,30 @@ export default function Dashboard() {
         <div className="absolute -right-10 -top-10 w-64 h-64 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none"></div>
         <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-5 relative z-10">
           <div className="space-y-2 max-w-2xl">
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 flex-wrap">
               <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">
                 <BrainCircuit className="w-3.5 h-3.5" />
                 AI Recommendation Agent
               </span>
+
               {recommendation?.urgency_level === "HIGH" && (
                 <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold bg-rose-500/20 text-rose-400 border border-rose-500/30">
-                  <Flame className="w-3 h-3" /> High Priority
+                  <Flame className="w-3 h-3" /> {t("dashboard.highPriority", "High Priority")}
                 </span>
               )}
             </div>
+            <p className="text-xs text-indigo-300 font-medium">
+              {t("dashboard.greeting", "Welcome back")}, <span className="font-bold text-white">{user?.full_name || "Student"}</span>!
+            </p>
             <h1 className="text-xl sm:text-2xl font-black text-white tracking-tight">
-              What should I study now?
+              {t("dashboard.whatToStudyNow", "What should I study now?")}
             </h1>
             <p className="text-base font-semibold text-indigo-200">
-              {recommendation?.what_to_study_now || "Select or enroll in a subject to begin your study plan."}
+              {recommendation?.what_to_study_now || t("dashboard.recommendationFallback", "Select or enroll in a subject to begin your study plan.")}
             </p>
             <p className="text-xs text-slate-300 leading-relaxed">
               {recommendation?.reason ||
-                "Synthesized from your upcoming exam dates, past year question weightage, and latest quiz accuracy."}
+                t("dashboard.recommendationReason", "Synthesized from your upcoming exam dates, past year question weightage, and latest quiz accuracy.")}
             </p>
           </div>
 
@@ -103,7 +110,7 @@ export default function Dashboard() {
               className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold px-5 py-3 rounded-xl shadow-lg shadow-indigo-600/30 hover:shadow-indigo-600/50 transition active:scale-95 cursor-pointer"
             >
               <Play className="w-3.5 h-3.5 fill-white" />
-              <span>{recommendation?.action_label || "Start Focused Session"}</span>
+              <span>{recommendation?.action_label || t("dashboard.startStudying", "Start Action")}</span>
             </button>
           </div>
         </div>
@@ -116,7 +123,7 @@ export default function Dashboard() {
           <div className="flex items-center justify-between mb-3">
             <h3 className="text-xs font-semibold uppercase tracking-wider text-slate-400 flex items-center gap-2">
               <CalendarDays className="w-4 h-4 text-indigo-400" />
-              Upcoming Exams
+              {t("dashboard.examCountdown", "Exam Countdown Clocks")}
             </h3>
             <button
               onClick={() => setActiveTab("exams")}
@@ -129,12 +136,12 @@ export default function Dashboard() {
           <div className="space-y-3">
             {exams.length === 0 ? (
               <div className="py-3 text-center space-y-2">
-                <p className="text-xs text-slate-400">No exams scheduled yet.</p>
+                <p className="text-xs text-slate-400">{t("dashboard.noExams", "No exams scheduled yet.")}</p>
                 <button
                   onClick={() => setActiveTab("exams")}
                   className="text-xs text-indigo-400 hover:text-indigo-300 font-bold inline-flex items-center gap-1"
                 >
-                  + Add Exam Target <ArrowRight className="w-3 h-3" />
+                  + {t("dashboard.addExam", "Add Exam")} <ArrowRight className="w-3 h-3" />
                 </button>
               </div>
             ) : (
@@ -145,7 +152,7 @@ export default function Dashboard() {
                 >
                   <div className="overflow-hidden pr-2">
                     <h4 className="text-xs font-bold text-slate-200 truncate">{ex.exam_name}</h4>
-                    <p className="text-[11px] text-slate-400">Target: {ex.target_score}%</p>
+                    <p className="text-[11px] text-slate-400">{t("dashboard.targetScore", "Target")}: {ex.target_score}%</p>
                   </div>
                   <div className="text-right shrink-0">
                     <span
@@ -155,7 +162,7 @@ export default function Dashboard() {
                           : "bg-amber-500/20 text-amber-400 border border-amber-500/30"
                       }`}
                     >
-                      {ex.days_left} Days Left
+                      {ex.days_left} {t("dashboard.daysLeft", "days left")}
                     </span>
                     <p className="text-[10px] text-slate-500 mt-0.5">Urgency: {ex.prep_urgency}%</p>
                   </div>
@@ -270,7 +277,7 @@ export default function Dashboard() {
             <div>
               <h3 className="text-base font-bold text-white flex items-center gap-2">
                 <Clock className="w-4 h-4 text-indigo-400" />
-                Today's Adaptive Preparation Plan
+                {t("dashboard.todaySchedule", "Today's Adaptive Preparation Plan")}
               </h3>
               <p className="text-xs text-slate-400">
                 Generated by Study Planner Agent based on exam urgency
@@ -287,7 +294,7 @@ export default function Dashboard() {
           <div className="space-y-3">
             {todayTasks.length === 0 ? (
               <div className="py-8 text-center space-y-2">
-                <p className="text-xs text-slate-400">No study tasks scheduled for today.</p>
+                <p className="text-xs text-slate-400">{t("dashboard.noTasksToday", "No pending tasks for today. You are completely on track!")}</p>
                 <p className="text-[11px] text-slate-500 max-w-sm mx-auto">
                   Provide your syllabus or lecture notes so the AI Study Planner can generate your daily preparation schedule.
                 </p>

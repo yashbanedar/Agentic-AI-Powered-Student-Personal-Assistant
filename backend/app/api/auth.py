@@ -104,6 +104,10 @@ def update_settings(data: dict, current_user: User = Depends(get_current_user), 
         current_user.openai_api_key = data["openai_api_key"]
     if "full_name" in data:
         current_user.full_name = data["full_name"]
+    if "preferences" in data and isinstance(data["preferences"], dict):
+        prefs = dict(current_user.preferences or {})
+        prefs.update(data["preferences"])
+        current_user.preferences = prefs
     db.commit()
     db.refresh(current_user)
     return current_user

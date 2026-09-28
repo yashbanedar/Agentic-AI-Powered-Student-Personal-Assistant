@@ -3,11 +3,8 @@ const getApiBase = () => {
   if (envUrl && envUrl.trim() !== "") {
     return envUrl.endsWith("/api/v1") ? envUrl : `${envUrl.replace(/\/$/, "")}/api/v1`;
   }
-  // In dev mode, default to local backend port 8005
-  if (import.meta.env.DEV) {
-    return "http://localhost:8005/api/v1";
-  }
-  // In production (same origin / unified deployment), use relative /api/v1
+  // Use relative /api/v1 so Vite's proxy automatically routes to http://127.0.0.1:8000
+  // and production FastAPI serves directly without CORS or port mismatch
   return "/api/v1";
 };
 
@@ -164,10 +161,10 @@ export const api = {
     }),
 
   // AI Tutor RAG Chat
-  askTutor: (message, subject_id = null, chat_history = []) =>
+  askTutor: (message, subject_id = null, chat_history = [], language = "en", student_level = null) =>
     request("/tutor/chat", {
       method: "POST",
-      body: JSON.stringify({ message, subject_id, chat_history }),
+      body: JSON.stringify({ message, subject_id, chat_history, language, student_level }),
     }),
 
   // Quizzes

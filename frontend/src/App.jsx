@@ -1,5 +1,6 @@
 import React from "react";
 import { ThemeProvider } from "./context/ThemeContext";
+import { LanguageProvider, useLanguage } from "./context/LanguageContext";
 import { AuthProvider, useAuth } from "./context/AuthContext";
 import { AppProvider, useApp } from "./context/AppContext";
 import Layout from "./components/layout/Layout";
@@ -23,12 +24,13 @@ import Settings from "./pages/Settings";
 function MainApp() {
   const { user, loading } = useAuth();
   const { activeTab } = useApp();
+  const { t } = useLanguage();
 
   if (loading) {
     return (
       <div className="min-h-screen bg-slate-950 flex flex-col items-center justify-center text-slate-400 space-y-3">
         <div className="w-8 h-8 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin"></div>
-        <p className="text-xs font-mono">Initializing Multi-Agent Ecosystem...</p>
+        <p className="text-xs font-mono">{t("brand.initializing", "Initializing Multi-Agent Ecosystem...")}</p>
       </div>
     );
   }
@@ -67,11 +69,13 @@ function MainApp() {
 export default function App() {
   return (
     <ThemeProvider>
-      <AuthProvider>
-        <AppProvider>
-          <MainApp />
-        </AppProvider>
-      </AuthProvider>
+      <LanguageProvider>
+        <AuthProvider>
+          <AppProvider>
+            <MainApp />
+          </AppProvider>
+        </AuthProvider>
+      </LanguageProvider>
     </ThemeProvider>
   );
 }

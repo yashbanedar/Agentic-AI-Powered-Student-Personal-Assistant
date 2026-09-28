@@ -1,4 +1,4 @@
-﻿from typing import List, Optional
+from typing import List, Optional
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from app.core.database import get_db
@@ -32,12 +32,19 @@ def ask_tutor(data: ChatQuery, current_user: User = Depends(get_current_user), d
             "category": doc.category
         })
         
+    # Determine language & student level from query or user preferences
+    user_prefs = current_user.preferences or {}
+    req_lang = data.language or user_prefs.get("language") or "en"
+    req_level = data.student_level or user_prefs.get("academic_level") or "Undergraduate"
+
     response = TutorAgent.answer_doubt(
         query=query,
         chunks=chunk_list,
         gemini_api_key=current_user.gemini_api_key or "",
         openai_api_key=current_user.openai_api_key or "",
-        chat_history=data.chat_history or []
+        chat_history=data.chat_history or [],
+        language=req_lang,
+        student_level=req_level
     )
     
     # Log to AI activity stream

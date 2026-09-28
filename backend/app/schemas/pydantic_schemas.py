@@ -193,6 +193,8 @@ class ChatQuery(BaseModel):
     subject_id: Optional[int] = None
     message: str
     chat_history: Optional[List[Dict[str, str]]] = []
+    language: Optional[str] = "en"
+    student_level: Optional[str] = None
 
 class ChatCitation(BaseModel):
     document_name: str

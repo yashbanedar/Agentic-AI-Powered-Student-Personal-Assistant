@@ -1,3 +1,10 @@
+databases:
+  - name: student-ai-db
+    databaseName: student_assistant
+    user: student_admin
+    plan: free
+    region: oregon
+
 services:
   - type: web
     name: student-ai-assistant
@@ -15,4 +22,6 @@ services:
       - key: OPENAI_API_KEY
         sync: false
       - key: DATABASE_URL
-        sync: false
+        fromDatabase:
+          name: student-ai-db
+          property: connectionString
